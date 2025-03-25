@@ -40,15 +40,19 @@ server.post("/signup",auth,async (req,res)=>{
 
 server.post("/addCustomerData",auth,async (req,res)=>{
     const customerObj = {
-        CustomerName:"akshay",
-        phoneNumber:900000000,
-        customerAge:10
+        customerName:"akshay saini",
+        phoneNumber:1000,
+        customerAge:20
     }
 
     const customer = new customerDetails(customerObj)
     await customer.save();
     res.send("customer Data added Successfully")
 
+})
+
+server.get("/",(req,res)=>{
+    res.send("welcome to dev tinder")
 })
 
 
@@ -58,6 +62,7 @@ server.use("/",auth,(err,req,res,next)=>{
         res.status(500).send("something went wrong")
     }
     else{
+        
         next();
     }
    
