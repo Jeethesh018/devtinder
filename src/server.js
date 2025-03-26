@@ -6,6 +6,7 @@ const {database} = require("../database/database.js")
 const {auth} = require("../middleware/auth")
 const {Usermodel} = require("../models/user.js")
 const {customerDetails} = require("../models/customerData.js")
+server.use(express.json())
 
 
 
@@ -23,12 +24,7 @@ database.then(
 
 
 server.post("/signup",auth,async (req,res)=>{
-    const userObj={
-        firstName:"mahendra",
-        lastName:"dhoni",
-        emailId:"Akshay@saini.com",
-        password:"pass@123"
-    }
+    const userObj=req.body
 
     const user =  new Usermodel(userObj)
      await user.save();
