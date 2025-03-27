@@ -33,13 +33,40 @@ server.post("/signup",auth,async (req,res)=>{
 
 })
 
+server.get("/customerData",auth,async (req,res)=>{
+     const customerData = await customerDetails.find({})
+     res.send(customerData)
+})
+
+
+
+server.get("/customerData/:userID",auth, async (req,res)=>{
+
+    const customerData = await customerDetails.find({ _id : req.params.userID})
+    res.send(customerData)
+
+})
+
+
+server.put("/updateCustomerData",auth,async (req,res)=>{
+    console.log(req.body)
+
+    const customerData = await customerDetails.findByIdAndUpdate(req.body.userId,req.body)
+    res.send(customerData)
+})
+
+
+server.delete("/deleteCustomer/:userId",auth,async (req,res)=>{
+
+
+    const customerData = await customerDetails.findByIdAndDelete({_id  : req.params.userId})
+    res.send("deleted successfully")
+})
+
 
 server.post("/addCustomerData",auth,async (req,res)=>{
-    const customerObj = {
-        customerName:"akshay saini",
-        phoneNumber:1000,
-        customerAge:20
-    }
+    const customerObj = req.body
+    console.log(req.body)
 
     const customer = new customerDetails(customerObj)
     await customer.save();
