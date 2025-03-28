@@ -65,12 +65,17 @@ server.delete("/deleteCustomer/:userId",auth,async (req,res)=>{
 
 
 server.post("/addCustomerData",auth,async (req,res)=>{
-    const customerObj = req.body
-    console.log(req.body)
-
-    const customer = new customerDetails(customerObj)
-    await customer.save();
-    res.send("customer Data added Successfully")
+    try{
+        const customerObj = req.body
+        console.log(req.body)
+    
+        const customer = new customerDetails(customerObj)
+        await customer.save();
+        res.send("customer Data added Successfully")
+    }catch(e){
+        res.status(400).send({message :e.message,data:[] } )
+    }
+   
 
 })
 
