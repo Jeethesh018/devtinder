@@ -11,6 +11,19 @@ const customerData = new mongoose.Schema(
             lowercase:true,
             trim:true
         },
+        email:{
+            type:String,
+            required:true,
+            lowercase:true,
+            minLength:5,
+            trim:true,
+            validate:{
+                validator: (value) => {
+                    return value.includes("@");
+                  },
+                  message: "Enter a valid email",
+            }
+        },
         phoneNumber: {
             type: String,
             required: true,
