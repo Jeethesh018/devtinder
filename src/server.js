@@ -3,11 +3,14 @@ const express = require("express")
 const server = express();
 const {database} = require("../database/database.js")
 const validator = require("validator")
+const cookiePaser = require("cookie-parser")
 
 const {auth} = require("../middleware/auth")
 const {Usermodel} = require("../models/user.js")
 const {customerDetails} = require("../models/customerData.js")
+const jwt = require("jsonwebtoken")
 server.use(express.json())
+server.use(cookiePaser())
 const {validateSignupData} = require("../utils/validator.js")
 const bcrypt = require("bcrypt")
 
@@ -64,12 +67,15 @@ server.post("/login",auth,async (req,res)=>{
         console.log(user.password)
 
         const isPasswordValid = await bcrypt.compare(password,user.password)
+        const token = await jwt.sign({_id : req.emailId},"admin")
 
         if(!isPasswordValid){
             res.status(401).send("password is not valid")
         }
         if(isPasswordValid){
-            res.send("login successfull")
+            
+            res.cookie("token",token)
+            res.send({message :"login successfull" })
         }
     }catch(e){
         res.status(401).send("enter valid login details")
@@ -78,7 +84,9 @@ server.post("/login",auth,async (req,res)=>{
 
 server.get("/userData",auth,async (req,res)=>{
 
-
+const {token}= req.cookies
+const verifyToken = await jwt.verify(token,"admin")
+console.log(verifyToken)
 const userData = await Usermodel.find({})
 res.send(userData)
 })
