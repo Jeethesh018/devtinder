@@ -1,4 +1,5 @@
 const {mongoose} = require("mongoose")
+const jwt = require("jsonwebtoken")
 
 
 const userschema = new mongoose.Schema({
@@ -51,6 +52,14 @@ const userschema = new mongoose.Schema({
         message:"Enter a Valid Gender required (male, female, others)"
     }
 })
+
+
+userschema.methods.signin = async function () {
+    const user = this;
+   const token = await jwt.sign({_id : user._id},"admin")
+
+  return token;
+}
 
 
 const Usermodel = mongoose.model("profile",userschema)
