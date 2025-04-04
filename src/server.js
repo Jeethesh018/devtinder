@@ -63,6 +63,15 @@ server.post("/login", async (req, res) => {
     }
 });
 
+server.post("/logout",auth,(req,res)=>{
+    res.cookie("token",null,{
+        expires :  new Date(Date.now())
+    })
+    res.send({message:"logout successfull"})
+})
+
+
+
 server.use("/",userRouter,customerRouter)
 
 

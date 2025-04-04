@@ -3,6 +3,7 @@ const {auth} = require("../middleware/auth")
 const userRouter = express.Router();
 const jwt = require("jsonwebtoken")
 const {Usermodel} = require("../models/user.js")
+const bcrypt = require("bcrypt")
 
 userRouter.get("/userData",auth,async (req,res)=>{
 
@@ -74,9 +75,36 @@ userRouter.get("/userData",auth,async (req,res)=>{
        res.status(401).send({error : e.message})
     }
 
-    
-
 })
+
+
+userRouter.patch("/user/forgotpassword", auth, async (req, res) => {
+    try {
+
+        const passwordHash = await bcrypt.hash(req.body.newpassword, 10);
+
+       
+        if (req.user.emailId === req.body.emailId) {
+    const updatedUser = await Usermodel.findByIdAndUpdate(
+                { _id: req.body.userId },     
+                { password: passwordHash },    
+                { new: true }                 
+            );
+
+            if (!updatedUser) {
+                return res.status(404).send("User not found");
+            }
+
+            console.log(updatedUser);
+            res.status(200).send("Password updated successfully");
+        } else {
+            return res.status(400).send("Email mismatch");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error updating password");
+    }
+});
 
 
 module.exports = userRouter;
