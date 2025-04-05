@@ -14,7 +14,8 @@ server.use(cookiePaser())
 const {validateSignupData} = require("../utils/validator.js")
 const bcrypt = require("bcrypt")
 const userRouter = require("../Router/user.js")
-const customerRouter = require("../Router/customer.js")
+const customerRouter = require("../Router/customer.js");
+const connRouter = require("../Router/request.js");
 
 
 
@@ -72,7 +73,7 @@ server.post("/logout",auth,(req,res)=>{
 
 
 
-server.use("/",userRouter,customerRouter)
+server.use("/",userRouter,customerRouter,connRouter)
 
 
 server.get("/",(req,res)=>{
