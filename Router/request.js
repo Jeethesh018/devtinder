@@ -67,4 +67,63 @@ connRouter.post("/request/send/:status/:userId", auth, async (req, res) => {
     }
 });
 
+
+connRouter.post("/request/review/:status/:reqId", auth, async (req, res) => {
+    const { status, reqId } = req.params;
+    console.log('Requested reqId:', reqId);
+    console.log('Logged-in User ID:', req.user._id.toString());
+
+    try {
+        const loggedinUser = req.user;
+        const allowedStatus = ["accepted", "rejected"];
+
+        if (!allowedStatus.includes(status)) {
+            return res.status(400).json({
+                message: "Status not allowed"
+            });
+        }
+
+    
+        const connectRequest = await connectionrequestModel.findOne({
+            _id: reqId,
+            $or: [
+                { fromUserId: loggedinUser._id.toString() },
+                { touserId: loggedinUser._id.toString() }
+            ],
+            status: "interested"
+        });
+
+        console.log("Found connectRequest:", connectRequest);
+
+        if (!connectRequest) {
+            return res.status(404).json({ message: "Connection request not found" });
+        }
+
+        connectRequest.status = status;
+        const data = await connectRequest.save();
+
+        res.json({
+            message: `Connection request ${status}`,
+            data
+        });
+
+    } catch (e) {
+        console.error("Error:", e);
+        res.status(400).send(e.message);
+    }
+});
+
+
+connRouter.get("/connectionrequests",auth,async (req,res)=>{
+
+
+    try{
+         const data = await connectionrequestModel.find({})
+         res.send(data)
+    }
+    catch(e){
+        res.status(400).send(e.message)
+    }
+})
+
 module.exports = connRouter;
