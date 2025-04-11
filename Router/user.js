@@ -3,7 +3,8 @@ const {auth} = require("../middleware/auth")
 const userRouter = express.Router();
 const jwt = require("jsonwebtoken")
 const {Usermodel} = require("../models/user.js")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const { validateSignupData } = require("../utils/validator.js");
 
 userRouter.get("/userData",auth,async (req,res)=>{
 

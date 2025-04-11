@@ -118,7 +118,7 @@ connRouter.get("/connectionrequests",auth,async (req,res)=>{
 
 
     try{
-         const data = await connectionrequestModel.find({})
+         const data = await connectionrequestModel.find({}).populate(["fromUserId","touserId"],["firstName","lastName"])
          res.send(data)
     }
     catch(e){

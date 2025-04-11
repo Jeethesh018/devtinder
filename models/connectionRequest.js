@@ -3,11 +3,14 @@ const {mongoose} = require("mongoose")
 const connrequest = new mongoose.Schema({
     fromUserId : {
         type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref: "profile"
        
     },
     touserId : {
         type:mongoose.Schema.Types.ObjectId,
-        required:true
+        required:true,
+         ref: "profile"
     },
     status:{
         type:String,

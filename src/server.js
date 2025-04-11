@@ -16,6 +16,7 @@ const bcrypt = require("bcrypt")
 const userRouter = require("../Router/user.js")
 const customerRouter = require("../Router/customer.js");
 const connRouter = require("../Router/request.js");
+const mainuserRouter = require("../Router/mainUser.js");
 
 
 
@@ -73,7 +74,7 @@ server.post("/logout",auth,(req,res)=>{
 
 
 
-server.use("/",userRouter,customerRouter,connRouter)
+server.use("/",userRouter,customerRouter,connRouter,mainuserRouter)
 
 
 server.get("/",(req,res)=>{
