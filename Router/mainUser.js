@@ -1,6 +1,7 @@
 const express = require("express");
 const { auth } = require("../middleware/auth");
 const { connectionrequestModel } = require("../models/connectionRequest");
+const { Usermodel } = require("../models/user");
 
 const mainuserRouter = express.Router();
 
@@ -59,6 +60,67 @@ mainuserRouter.get("/user/connections",auth,async (req,res)=>{
     }
     catch(e){
         res.status(401).send({
+            message:e.message
+        })
+    }
+})
+
+
+
+mainuserRouter.get("/user/feed",auth,async (req,res)=>{
+    try{
+
+        const loggedinUser = req.user
+
+        const connrequest = await connectionrequestModel.find({
+            $or:[
+                {
+                    fromUserId : loggedinUser._id,
+                },
+                {
+                    touserId:loggedinUser._id
+                }
+            ]
+        }).select("fromUserId touserId status")
+
+
+        const hideusersfromFeed = new Set();
+
+        connrequest.forEach(conn => {
+            if (conn.fromUserId) {
+                hideusersfromFeed.add(conn.fromUserId.toString());
+            }
+            if (conn.touserId) {
+                hideusersfromFeed.add(conn.touserId.toString());
+            }
+        });
+
+
+            const users = await Usermodel.find({
+            $and:[{
+                _id : {
+                    $nin : Array.from(hideusersfromFeed)
+                }
+            },{
+                _id : {
+                    $ne:loggedinUser._id
+                }
+            }
+            ]
+               
+            }).select("firstName lastName")
+
+
+
+
+        res.send({
+            message:"data fetched successfully",
+            data:users
+        })
+          
+    }
+    catch(e){
+        res.status(400).send({
             message:e.message
         })
     }

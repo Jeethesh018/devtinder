@@ -15,7 +15,7 @@ const connrequest = new mongoose.Schema({
     status:{
         type:String,
         required:true,
-        enum:["ignore","interested","accepted","rejected"],
+        enum:["ignored","interested","accepted","rejected"],
     message: `{VALUE} is inccorect statustype`
         
     },
