@@ -71,6 +71,13 @@ mainuserRouter.get("/user/feed",auth,async (req,res)=>{
     try{
 
         const loggedinUser = req.user
+        const pageNo = parseInt(req.query.pageNo) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit <=50 && parseInt(req.query.limit) || 10;
+       
+
+
+        const skip = (pageNo-1)*limit
 
         const connrequest = await connectionrequestModel.find({
             $or:[
@@ -108,7 +115,7 @@ mainuserRouter.get("/user/feed",auth,async (req,res)=>{
             }
             ]
                
-            }).select("firstName lastName")
+            }).select("firstName lastName").skip(skip).limit(limit)
 
 
 
@@ -123,6 +130,8 @@ mainuserRouter.get("/user/feed",auth,async (req,res)=>{
         res.status(400).send({
             message:e.message
         })
+
+       
     }
 })
 
